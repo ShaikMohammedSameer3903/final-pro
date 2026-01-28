@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useEffect } from 'react'
 import mammoth from 'mammoth'
-import html2pdf from 'html2pdf.js'
+import { jsPDF } from 'jspdf'
 import Button from '../components/Button.jsx'
 
 export default function DocxToPdf() {
@@ -25,15 +25,25 @@ export default function DocxToPdf() {
 
   const exportPdf = async () => {
     if (!previewRef.current) return
-    const opt = {
-      margin: 10,
-      filename: `${filenameBase}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-      pagebreak: { mode: ['css', 'legacy'] },
-    }
-    await html2pdf().set(opt).from(previewRef.current).save()
+    
+    // Create a new jsPDF instance
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    })
+    
+    // Add the HTML content to the PDF
+    await doc.html(previewRef.current, {
+      callback: function(doc) {
+        // Save the PDF
+        doc.save(`${filenameBase}.pdf`)
+      },
+      x: 10,
+      y: 10,
+      width: 190, // A4 width in mm - 2*10mm margins
+      windowWidth: previewRef.current.scrollWidth,
+    })
   }
 
   return (
