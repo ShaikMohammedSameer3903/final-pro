@@ -28,7 +28,7 @@
     "three": "^0.160.0"
   },
   "overrides": {
-    "jspdf": "^3.0.5",
+    "jspdf": "^3.0.4",
     "esbuild": "^0.25.0"
   },
   "devDependencies": {
